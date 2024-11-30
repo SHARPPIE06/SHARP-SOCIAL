@@ -1,67 +1,14 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js'
-import dotenv from 'dotenv'
 
 class VisitorTracker {
     constructor() {
         // Initialize Supabase with environment variables
         this.supabase = createClient(
-            process.env.SUPABASE_URL,
-            process.env.SUPABASE_ANON_KEY
+            'https://miygojwoyvvwdjkjugif.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peWdvandveXZ2d2Rqa2p1Z2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI5NDEzMDQsImV4cCI6MjA0ODUxNzMwNH0.bjyOiSDwvTRFaBrWTGGEl4u_G2DetVnV1vE6DDmPK4E'
         );
-        this.map = this.initializeMap();
+        this.map = null; // Will be set by the map initialization in index.html
         this.trackVisitor();
-    }
-
-    initializeMap() {
-        try {
-            const map = L.map('map', {
-                center: [12.8797, 121.7740], // Philippines center
-                zoom: 6,
-                minZoom: 5,
-                maxZoom: 18
-            });
-
-            // Custom green theme for markers
-            const customIcon = L.divIcon({
-                html: `<div style="
-                    background-color: #00ff00;
-                    width: 8px;
-                    height: 8px;
-                    border-radius: 50%;
-                    border: 2px solid #ffffff;
-                    box-shadow: 0 0 10px rgba(0,255,0,0.5);
-                "></div>`,
-                className: 'custom-marker',
-                iconSize: [12, 12],
-                iconAnchor: [6, 6]
-            });
-
-            // Define map layers with DEDSEC theme
-            const layers = {
-                'DARK MODE': L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
-                    attribution: 'UNDER MY CONTROL'
-                }),
-                'LIGHT MODE': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-                    attribution: 'UNDER MY CONTROL'
-                }),
-                'STREET MODE': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: 'UNDER MY CONTROL'
-                }),
-                'SATELLITE MODE': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'UNDER MY CONTROL'
-                }),
-                'HIGH-LOW': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'UNDER MY CONTROL'
-                })
-            };
-
-            // Set default dark mode
-            layers['DARK MODE'].addTo(map);
-
-            return map;
-        } catch (error) {
-            console.error('Error initializing map:', error);
-        }
     }
 
     async trackVisitor() {
@@ -166,10 +113,5 @@ class VisitorTracker {
     }
 }
 
-// Create a .env file and load it
-dotenv.config();
-
-// Initialize tracker when page loads
-window.addEventListener('load', () => {
-    new VisitorTracker();
-}); 
+// Export the class for use in index.html
+export default VisitorTracker; 

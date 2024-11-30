@@ -9,5 +9,11 @@
   },
   "scripts": {
     "start": "node server.js"
-  }
+  },
+  "type": "module",
+  "devDependencies": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
