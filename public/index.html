@@ -211,6 +211,12 @@
             const tracker = new VisitorTracker();
             tracker.map = map;  // Share the map instance
             
+            // Load initial data
+            tracker.fetchVisitors();
+            
+            // Track visitor only once
+            tracker.trackVisitor();
+
             // Custom marker icon
             const customIcon = L.divIcon({
                 html: `<div style="
@@ -225,77 +231,6 @@
                 iconSize: [12, 12],
                 iconAnchor: [6, 6]
             });
-
-            // Add this new function to handle visitor tracking
-            async function trackVisitor() {
-                console.log('Starting visitor tracking...');
-                if ("geolocation" in navigator) {
-                    try {
-                        navigator.geolocation.getCurrentPosition(async function(position) {
-                            console.log('Got position:', position);
-                            const lat = position.coords.latitude.toFixed(6);
-                            const lng = position.coords.longitude.toFixed(6);
-
-                            try {
-                                // Get IP info
-                                console.log('Fetching IP info...');
-                                const ipResponse = await fetch('https://ipapi.co/json/');
-                                const ipData = await ipResponse.json();
-                                console.log('IP data:', ipData);
-
-                                // Get device info
-                                const deviceInfo = {
-                                    os: navigator.platform,
-                                    browser: navigator.userAgent,
-                                    deviceType: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-                                    screen: `${window.screen.width}x${window.screen.height}`
-                                };
-                                console.log('Device info:', deviceInfo);
-
-                                // Save to Supabase
-                                console.log('Saving to Supabase...');
-                                const { data, error } = await tracker.supabase
-                                    .from('visitors')
-                                    .insert([{
-                                        latitude: lat,
-                                        longitude: lng,
-                                        ip_address: ipData.ip,
-                                        country: ipData.country_name,
-                                        isp: ipData.org,
-                                        os: deviceInfo.os,
-                                        browser: deviceInfo.browser,
-                                        device_type: deviceInfo.deviceType,
-                                        screen_resolution: deviceInfo.screen,
-                                        visit_time: new Date().toISOString()
-                                    }]);
-
-                                if (error) throw error;
-
-                                // Add marker to map
-                                const marker = L.marker([lat, lng], {icon: customIcon}).addTo(map);
-                                marker.bindPopup(`
-                                    <div style="color: #00ff00; background: #000; padding: 5px;">
-                                        <strong>Location:</strong> ${lat}, ${lng}<br>
-                                        <strong>IP:</strong> ${ipData.ip}<br>
-                                        <strong>Country:</strong> ${ipData.country_name}<br>
-                                        <strong>ISP:</strong> ${ipData.org}
-                                    </div>
-                                `);
-
-                                // Refresh visitor table
-                                tracker.fetchVisitors();
-                            } catch (error) {
-                                console.error('Error tracking visitor:', error);
-                            }
-                        });
-                    } catch (error) {
-                        console.error('Error tracking visitor:', error);
-                    }
-                }
-            }
-
-            // Call trackVisitor when page loads
-            trackVisitor();
 
             // Add click handlers for table buttons
             document.getElementById('visitor-data').addEventListener('click', function(e) {

@@ -8,7 +8,6 @@ class VisitorTracker {
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peWdvandveXZ2d2Rqa2p1Z2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI5NDEzMDQsImV4cCI6MjA0ODUxNzMwNH0.bjyOiSDwvTRFaBrWTGGEl4u_G2DetVnV1vE6DDmPK4E'
         );
         this.map = null; // Will be set by the map initialization in index.html
-        this.trackVisitor();
     }
 
     async trackVisitor() {
@@ -138,15 +137,71 @@ class VisitorTracker {
 
     async saveVisitorData(visitorData) {
         try {
-            const { data, error } = await this.supabase
+            // First, check for existing entries with same IP or coordinates
+            const { data: existingVisitors, error: queryError } = await this.supabase
                 .from('visitors')
-                .insert([visitorData]);
+                .select('*')
+                .or(`ip_address.eq.${visitorData.ip_address},and(latitude.eq.${visitorData.latitude},longitude.eq.${visitorData.longitude})`);
 
-            if (error) throw error;
-            console.log('Visitor data saved:', data);
-            return data;
+            if (queryError) throw queryError;
+
+            // If no existing entries found, save the new visitor
+            if (!existingVisitors || existingVisitors.length === 0) {
+                const { data, error } = await this.supabase
+                    .from('visitors')
+                    .insert([visitorData]);
+
+                if (error) throw error;
+                console.log('New visitor data saved:', data);
+                
+                // Refresh the table after saving
+                await this.fetchVisitors();
+                
+                return data;
+            } else {
+                console.log('Visitor already exists with same IP or coordinates');
+                // Still refresh the table to show existing data
+                await this.fetchVisitors();
+                return null;
+            }
         } catch (error) {
             console.error('Error saving visitor data:', error);
+        }
+    }
+
+    async fetchVisitors() {
+        try {
+            const { data, error } = await this.supabase
+                .from('visitors')
+                .select('*')
+                .order('visit_time', { ascending: false });
+
+            if (error) throw error;
+
+            const visitorTableBody = document.getElementById('visitor-data');
+            visitorTableBody.innerHTML = '';
+
+            data.forEach(visitor => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${visitor.latitude}</td>
+                    <td>${visitor.longitude}</td>
+                    <td>${visitor.ip_address}</td>
+                    <td>${visitor.os}</td>
+                    <td>${visitor.browser.substring(0, 50)}...</td>
+                    <td>${visitor.device_type}</td>
+                    <td>${visitor.screen_resolution}</td>
+                    <td>${visitor.country}</td>
+                    <td>${visitor.isp}</td>
+                    <td>${new Date(visitor.visit_time).toLocaleString()}</td>
+                    <td><button class="map-mode-button preview-button">PREVIEW</button></td>
+                    <td><button class="map-mode-button street-view-button">STREET VIEW</button></td>
+                    <td><button class="map-mode-button zoom-button">ZOOM</button></td>
+                `;
+                visitorTableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching visitors:', error);
         }
     }
 }
