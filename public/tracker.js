@@ -460,12 +460,73 @@ class VisitorTracker {
                 L.marker([lat, lng], { icon: customIcon })
                     .addTo(this.map)
                     .bindPopup(`
-                        <div style="color: #ff0000; background: #000; padding: 15px;">
-                            <strong>Location:</strong> ${lat}, ${lng}<br>
-                            <strong>IP:</strong> ${visitor.ip_address || 'Unknown'}<br>
-                            <strong>Country:</strong> ${visitor.country || 'Unknown'}<br>
-                            <strong>ISP:</strong> ${visitor.isp || 'Unknown'}<br>
-                            <strong>Time:</strong> ${new Date(visitor.visit_time).toLocaleString()}
+                        <div style="
+                            color: #ff0000;
+                            background: #000;
+                            padding: 15px;
+                            border: 1px solid #ff0000;
+                            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+                            font-family: 'Courier New', monospace;
+                            min-width: 200px;
+                        ">
+                            <div style="
+                                border-bottom: 1px solid #ff0000;
+                                margin-bottom: 10px;
+                                padding-bottom: 5px;
+                                font-size: 14px;
+                                text-shadow: 0 0 5px #ff0000;
+                                text-align: center;
+                            ">
+                                YOUR IP IS UNDER MY CONTROL☠️
+                            </div>
+                            <div style="
+                                font-size: 12px;
+                                margin-bottom: 8px;
+                                text-shadow: 0 0 3px #ff0000;
+                            ">
+                                <strong>LAT:</strong> ${lat}<br>
+                                <strong>LNG:</strong> ${lng}
+                            </div>
+                            <div style="
+                                font-size: 12px;
+                                margin-bottom: 12px;
+                                padding: 5px;
+                                background: rgba(255, 0, 0, 0.1);
+                                border-left: 2px solid #ff0000;
+                            ">
+                                <strong>PUBLIC IPv4:</strong><br>
+                                <span style="
+                                    color: #ff0000;
+                                    text-shadow: 0 0 5px #ff0000;
+                                ">${visitor.ip_address || 'Unknown'}</span>
+                            </div>
+                            <div style="
+                                font-size: 11px;
+                                text-align: center;
+                                margin-top: 15px;
+                                padding: 8px;
+                                border: 1px dashed #ff0000;
+                                background: rgba(255, 0, 0, 0.05);
+                                animation: glitch 2s infinite;
+                            ">
+                                I DIDN'T GET YOUR ACTUAL LOCATION<br>
+                                BUT I CAN MANIPULATE YOUR<br>
+                                <span style="
+                                    font-weight: bold;
+                                    font-size: 13px;
+                                    text-shadow: 0 0 8px #ff0000;
+                                ">PUBLIC IPv4 ☠️</span>
+                            </div>
+                            <style>
+                                @keyframes glitch {
+                                    0% { opacity: 1; transform: translate(0); }
+                                    20% { opacity: 0.8; transform: translate(-2px, 2px); }
+                                    40% { opacity: 1; transform: translate(2px, -2px); }
+                                    60% { opacity: 0.8; transform: translate(-2px); }
+                                    80% { opacity: 1; transform: translate(2px); }
+                                    100% { opacity: 1; transform: translate(0); }
+                                }
+                            </style>
                         </div>
                     `);
             });
