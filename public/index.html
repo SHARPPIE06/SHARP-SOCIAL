@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     
-    <!-- Leaflet CSS and JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
@@ -14,10 +13,41 @@
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
     
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <script>
+        (function() {
+            let devtools = function() {};
+            devtools.toString = function() {
+                debugger;
+                return '';
+            }
+            setInterval(function() {
+                console.profile(devtools);
+                console.profileEnd(devtools);
+            }, 100);
+        })();
+
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123 || 
+                (e.ctrlKey && e.shiftKey && e.keyCode == 73) || 
+                (e.ctrlKey && e.shiftKey && e.keyCode == 74) ||
+                (e.ctrlKey && e.keyCode == 85)) {
+                return false;
+            }
+        };
+    </script>
+
     <style>
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
         body {
             margin: 0;
             padding: 20px;
@@ -233,7 +263,6 @@
         import VisitorTracker from './tracker.js';
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize map
             const map = L.map('map', {
                 center: [12.8797, 121.7740],
                 zoom: 6,
@@ -241,7 +270,6 @@
                 maxZoom: 18
             });
 
-            // Define map layers
             const layers = {
                 'LIGHT MODE': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                     attribution: 'UNDER MY CONTROL'
@@ -260,41 +288,33 @@
                 })
             };
 
-            // Set default layer
             layers['DARK MODE'].addTo(map);
 
-            // Add click handlers for map mode buttons
             document.querySelectorAll('.map-mode-button').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const mode = e.target.textContent;
                     
-                    // Remove current layer
                     map.eachLayer((layer) => {
                         if (layer instanceof L.TileLayer) {
                             map.removeLayer(layer);
                         }
                     });
 
-                    // Add selected layer
                     if (layers[mode]) {
                         layers[mode].addTo(map);
                     }
                 });
             });
 
-            // Create tracker instance and pass the map
             const tracker = new VisitorTracker();
-            tracker.map = map;  // Share the map instance
+            tracker.map = map;
             
-            // Load initial data
             tracker.fetchVisitors();
             
-            // Add click handler for track location button
             document.getElementById('track-location').addEventListener('click', () => {
                 tracker.trackVisitor();
             });
 
-            // Custom marker icon
             const customIcon = L.divIcon({
                 html: `<div style="
                     background-color: #00ff00;
@@ -309,34 +329,24 @@
                 iconAnchor: [6, 6]
             });
 
-            // Add this new function to handle visitor tracking
             async function trackVisitor() {
-                console.log('Starting visitor tracking...');
                 if ("geolocation" in navigator) {
                     try {
                         navigator.geolocation.getCurrentPosition(async function(position) {
-                            console.log('Got position:', position);
                             const lat = position.coords.latitude.toFixed(6);
                             const lng = position.coords.longitude.toFixed(6);
 
                             try {
-                                // Get IP info
-                                console.log('Fetching IP info...');
                                 const ipResponse = await fetch('https://ipapi.co/json/');
                                 const ipData = await ipResponse.json();
-                                console.log('IP data:', ipData);
 
-                                // Get device info
                                 const deviceInfo = {
                                     os: navigator.platform,
                                     browser: navigator.userAgent,
                                     deviceType: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
                                     screen: `${window.screen.width}x${window.screen.height}`
                                 };
-                                console.log('Device info:', deviceInfo);
 
-                                // Save to Supabase
-                                console.log('Saving to Supabase...');
                                 const { data, error } = await tracker.supabase
                                     .from('visitors')
                                     .insert([{
@@ -354,7 +364,6 @@
 
                                 if (error) throw error;
 
-                                // Add marker to map
                                 const marker = L.marker([lat, lng], {icon: customIcon}).addTo(map);
                                 marker.bindPopup(`
                                     <div style="color: #00ff00; background: #000; padding: 5px;">
@@ -365,7 +374,6 @@
                                     </div>
                                 `);
 
-                                // Refresh visitor table
                                 tracker.fetchVisitors();
                             } catch (error) {
                                 console.error('Error tracking visitor:', error);
@@ -377,17 +385,14 @@
                 }
             }
 
-            // Call trackVisitor when page loads
             trackVisitor();
 
-            // Add click handlers for table buttons
             document.getElementById('visitor-data').addEventListener('click', function(e) {
                 if (e.target.classList.contains('preview-button')) {
                     const row = e.target.closest('tr');
                     const lat = row.cells[0].textContent;
                     const lng = row.cells[1].textContent;
                     
-                    // Use the same custom icon as in tracker.js
                     const customIcon = L.divIcon({
                         html: `
                             <div class="marker-container">
@@ -451,7 +456,6 @@
                     const lat = row.cells[0].textContent;
                     const lng = row.cells[1].textContent;
                     
-                    // Center map without marker
                     map.setView([lat, lng], 18);
                 }
                 else if (e.target.classList.contains('street-view-button')) {
@@ -459,7 +463,6 @@
                     const lat = row.cells[0].textContent;
                     const lng = row.cells[1].textContent;
                     
-                    // Open Google Street View in new tab
                     window.open(`https://www.google.com/maps?layer=c&cbll=${lat},${lng}`);
                 }
             });
