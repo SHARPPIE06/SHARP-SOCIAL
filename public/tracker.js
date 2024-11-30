@@ -235,74 +235,178 @@ class VisitorTracker {
 
             L.marker([lat, lng], { icon: customIcon }).addTo(this.map)
                 .bindPopup(`
-                    <div style="
-                        color: #ff0000;
-                        background: #000;
-                        padding: 15px;
-                        border: 1px solid #ff0000;
-                        box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-                        font-family: 'Courier New', monospace;
-                        min-width: 200px;
-                    ">
-                        <div style="
-                            border-bottom: 1px solid #ff0000;
-                            margin-bottom: 10px;
-                            padding-bottom: 5px;
-                            font-size: 14px;
-                            text-shadow: 0 0 5px #ff0000;
-                            text-align: center;
-                        ">
-                            YOUR IP IS UNDER MY CONTROL☠️
+                    <div class="hacker-popup">
+                        <div class="scan-line"></div>
+                        <div class="terminal-text">
+                            <div class="header">
+                                > SYSTEM BREACH DETECTED_<span class="blink">█</span>
+                            </div>
+                            <div class="content typing-effect">
+                                <div class="data-row">[LAT]: ${lat}</div>
+                                <div class="data-row">[LNG]: ${lng}</div>
+                                <div class="data-row">[IPv4]: ${this.ipInfo?.ip || 'Unknown'}</div>
+                            </div>
+                            <div class="warning">
+                                <span class="glitch-text" data-text="I DIDN'T GET YOUR ACTUAL LOCATION">I DIDN'T GET YOUR ACTUAL LOCATION</span><br>
+                                <span class="glitch-text" data-text="BUT I CAN MANIPULATE YOUR">BUT I CAN MANIPULATE YOUR</span><br>
+                                <span class="danger-text">PUBLIC IPv4 ☠️</span>
+                            </div>
                         </div>
-                        <div style="
-                            font-size: 12px;
-                            margin-bottom: 8px;
-                            text-shadow: 0 0 3px #ff0000;
-                        ">
-                            <strong>LAT:</strong> ${lat}<br>
-                            <strong>LNG:</strong> ${lng}
-                        </div>
-                        <div style="
-                            font-size: 12px;
+                    </div>
+                    <style>
+                        .hacker-popup {
+                            color: #0f0;
+                            background: #000;
+                            padding: 15px;
+                            border: 1px solid #0f0;
+                            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+                            font-family: 'Courier New', monospace;
+                            min-width: 250px;
+                            position: relative;
+                            overflow: hidden;
+                        }
+
+                        .scan-line {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            height: 4px;
+                            background: rgba(0, 255, 0, 0.2);
+                            animation: scanning 2s linear infinite;
+                        }
+
+                        .terminal-text {
+                            position: relative;
+                            z-index: 1;
+                        }
+
+                        .header {
+                            border-bottom: 1px solid #0f0;
+                            padding-bottom: 8px;
                             margin-bottom: 12px;
-                            padding: 5px;
-                            background: rgba(255, 0, 0, 0.1);
-                            border-left: 2px solid #ff0000;
-                        ">
-                            <strong>PUBLIC IPv4:</strong><br>
-                            <span style="
-                                color: #ff0000;
-                                text-shadow: 0 0 5px #ff0000;
-                            ">${this.ipInfo?.ip || 'Unknown'}</span>
-                        </div>
-                        <div style="
-                            font-size: 11px;
-                            text-align: center;
+                            font-size: 14px;
+                            text-shadow: 0 0 5px #0f0;
+                        }
+
+                        .content {
+                            margin: 10px 0;
+                        }
+
+                        .data-row {
+                            margin: 5px 0;
+                            opacity: 0;
+                            animation: typeIn 0.5s forwards;
+                        }
+
+                        .data-row:nth-child(1) { animation-delay: 0.5s; }
+                        .data-row:nth-child(2) { animation-delay: 1s; }
+                        .data-row:nth-child(3) { animation-delay: 1.5s; }
+
+                        .warning {
                             margin-top: 15px;
                             padding: 8px;
-                            border: 1px dashed #ff0000;
-                            background: rgba(255, 0, 0, 0.05);
-                            animation: glitch 2s infinite;
-                        ">
-                            I DIDN'T GET YOUR ACTUAL LOCATION<br>
-                            BUT I CAN MANIPULATE YOUR<br>
-                            <span style="
-                                font-weight: bold;
-                                font-size: 13px;
-                                text-shadow: 0 0 8px #ff0000;
-                            ">PUBLIC IPv4 ☠️</span>
-                        </div>
-                        <style>
-                            @keyframes glitch {
-                                0% { opacity: 1; transform: translate(0); }
-                                20% { opacity: 0.8; transform: translate(-2px, 2px); }
-                                40% { opacity: 1; transform: translate(2px, -2px); }
-                                60% { opacity: 0.8; transform: translate(-2px); }
-                                80% { opacity: 1; transform: translate(2px); }
-                                100% { opacity: 1; transform: translate(0); }
+                            border: 1px dashed #f00;
+                            background: rgba(255, 0, 0, 0.1);
+                            color: #f00;
+                        }
+
+                        .danger-text {
+                            display: block;
+                            font-weight: bold;
+                            font-size: 13px;
+                            text-shadow: 0 0 8px #f00;
+                            animation: pulse 1.5s infinite;
+                        }
+
+                        .blink {
+                            animation: blink 1s infinite;
+                        }
+
+                        @keyframes scanning {
+                            0% { transform: translateY(-100%); }
+                            100% { transform: translateY(1000%); }
+                        }
+
+                        @keyframes typeIn {
+                            from {
+                                opacity: 0;
+                                transform: translateX(-10px);
                             }
-                        </style>
-                    </div>
+                            to {
+                                opacity: 1;
+                                transform: translateX(0);
+                            }
+                        }
+
+                        @keyframes blink {
+                            0%, 100% { opacity: 1; }
+                            50% { opacity: 0; }
+                        }
+
+                        @keyframes pulse {
+                            0% { text-shadow: 0 0 5px #f00; }
+                            50% { text-shadow: 0 0 20px #f00; }
+                            100% { text-shadow: 0 0 5px #f00; }
+                        }
+
+                        .glitch-text {
+                            position: relative;
+                            animation: glitch-skew 1s infinite linear alternate-reverse;
+                            color: #f00;
+                        }
+
+                        .glitch-text::before,
+                        .glitch-text::after {
+                            content: attr(data-text);
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                        }
+
+                        .glitch-text::before {
+                            left: 2px;
+                            text-shadow: -2px 0 #0f0;
+                            clip: rect(44px, 450px, 56px, 0);
+                            animation: glitch-anim 5s infinite linear alternate-reverse;
+                        }
+
+                        .glitch-text::after {
+                            left: -2px;
+                            text-shadow: -2px 0 #00f;
+                            clip: rect(44px, 450px, 56px, 0);
+                            animation: glitch-anim2 5s infinite linear alternate-reverse;
+                        }
+
+                        @keyframes glitch-anim {
+                            0% { clip: rect(31px, 9999px, 94px, 0); transform: skew(0.85deg); }
+                            20% { clip: rect(89px, 9999px, 6px, 0); transform: skew(0.01deg); }
+                            40% { clip: rect(90px, 9999px, 89px, 0); transform: skew(0.13deg); }
+                            60% { clip: rect(90px, 9999px, 89px, 0); transform: skew(0.44deg); }
+                            80% { clip: rect(90px, 9999px, 89px, 0); transform: skew(0.13deg); }
+                            100% { clip: rect(90px, 9999px, 89px, 0); transform: skew(0.95deg); }
+                        }
+
+                        @keyframes glitch-anim2 {
+                            0% { clip: rect(65px, 9999px, 99px, 0); transform: skew(0.13deg); }
+                            20% { clip: rect(72px, 9999px, 22px, 0); transform: skew(0.95deg); }
+                            40% { clip: rect(72px, 9999px, 22px, 0); transform: skew(0.46deg); }
+                            60% { clip: rect(72px, 9999px, 22px, 0); transform: skew(0.34deg); }
+                            80% { clip: rect(72px, 9999px, 22px, 0); transform: skew(0.46deg); }
+                            100% { clip: rect(72px, 9999px, 22px, 0); transform: skew(0.83deg); }
+                        }
+
+                        @keyframes glitch-skew {
+                            0% { transform: skew(-2deg); }
+                            20% { transform: skew(1deg); }
+                            40% { transform: skew(-2deg); }
+                            60% { transform: skew(-2deg); }
+                            80% { transform: skew(1deg); }
+                            100% { transform: skew(-2deg); }
+                        }
+                    </style>
                 `);
         } catch (error) {
             console.error('Error adding marker:', error);
@@ -460,74 +564,178 @@ class VisitorTracker {
                 L.marker([lat, lng], { icon: customIcon })
                     .addTo(this.map)
                     .bindPopup(`
-                        <div style="
-                            color: #ff0000;
-                            background: #000;
-                            padding: 15px;
-                            border: 1px solid #ff0000;
-                            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-                            font-family: 'Courier New', monospace;
-                            min-width: 200px;
-                        ">
-                            <div style="
-                                border-bottom: 1px solid #ff0000;
-                                margin-bottom: 10px;
-                                padding-bottom: 5px;
-                                font-size: 14px;
-                                text-shadow: 0 0 5px #ff0000;
-                                text-align: center;
-                            ">
-                                YOUR IP IS UNDER MY CONTROL☠️
+                        <div class="hacker-popup">
+                            <div class="scan-line"></div>
+                            <div class="terminal-text">
+                                <div class="header">
+                                    > SYSTEM BREACH DETECTED_<span class="blink">█</span>
+                                </div>
+                                <div class="content typing-effect">
+                                    <div class="data-row">[LAT]: ${lat}</div>
+                                    <div class="data-row">[LNG]: ${lng}</div>
+                                    <div class="data-row">[IPv4]: ${visitor.ip_address || 'Unknown'}</div>
+                                </div>
+                                <div class="warning">
+                                    <span class="glitch-text" data-text="I DIDN'T GET YOUR ACTUAL LOCATION">I DIDN'T GET YOUR ACTUAL LOCATION</span><br>
+                                    <span class="glitch-text" data-text="BUT I CAN MANIPULATE YOUR">BUT I CAN MANIPULATE YOUR</span><br>
+                                    <span class="danger-text">PUBLIC IPv4 ☠️</span>
+                                </div>
                             </div>
-                            <div style="
-                                font-size: 12px;
-                                margin-bottom: 8px;
-                                text-shadow: 0 0 3px #ff0000;
-                            ">
-                                <strong>LAT:</strong> ${lat}<br>
-                                <strong>LNG:</strong> ${lng}
-                            </div>
-                            <div style="
-                                font-size: 12px;
+                        </div>
+                        <style>
+                            .hacker-popup {
+                                color: #0f0;
+                                background: #000;
+                                padding: 15px;
+                                border: 1px solid #0f0;
+                                box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+                                font-family: 'Courier New', monospace;
+                                min-width: 250px;
+                                position: relative;
+                                overflow: hidden;
+                            }
+
+                            .scan-line {
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                height: 4px;
+                                background: rgba(0, 255, 0, 0.2);
+                                animation: scanning 2s linear infinite;
+                            }
+
+                            .terminal-text {
+                                position: relative;
+                                z-index: 1;
+                            }
+
+                            .header {
+                                border-bottom: 1px solid #0f0;
+                                padding-bottom: 8px;
                                 margin-bottom: 12px;
-                                padding: 5px;
-                                background: rgba(255, 0, 0, 0.1);
-                                border-left: 2px solid #ff0000;
-                            ">
-                                <strong>PUBLIC IPv4:</strong><br>
-                                <span style="
-                                    color: #ff0000;
-                                    text-shadow: 0 0 5px #ff0000;
-                                ">${visitor.ip_address || 'Unknown'}</span>
-                            </div>
-                            <div style="
-                                font-size: 11px;
-                                text-align: center;
+                                font-size: 14px;
+                                text-shadow: 0 0 5px #0f0;
+                            }
+
+                            .content {
+                                margin: 10px 0;
+                            }
+
+                            .data-row {
+                                margin: 5px 0;
+                                opacity: 0;
+                                animation: typeIn 0.5s forwards;
+                            }
+
+                            .data-row:nth-child(1) { animation-delay: 0.5s; }
+                            .data-row:nth-child(2) { animation-delay: 1s; }
+                            .data-row:nth-child(3) { animation-delay: 1.5s; }
+
+                            .warning {
                                 margin-top: 15px;
                                 padding: 8px;
-                                border: 1px dashed #ff0000;
-                                background: rgba(255, 0, 0, 0.05);
-                                animation: glitch 2s infinite;
-                            ">
-                                I DIDN'T GET YOUR ACTUAL LOCATION<br>
-                                BUT I CAN MANIPULATE YOUR<br>
-                                <span style="
-                                    font-weight: bold;
-                                    font-size: 13px;
-                                    text-shadow: 0 0 8px #ff0000;
-                                ">PUBLIC IPv4 ☠️</span>
-                            </div>
-                            <style>
-                                @keyframes glitch {
-                                    0% { opacity: 1; transform: translate(0); }
-                                    20% { opacity: 0.8; transform: translate(-2px, 2px); }
-                                    40% { opacity: 1; transform: translate(2px, -2px); }
-                                    60% { opacity: 0.8; transform: translate(-2px); }
-                                    80% { opacity: 1; transform: translate(2px); }
-                                    100% { opacity: 1; transform: translate(0); }
+                                border: 1px dashed #f00;
+                                background: rgba(255, 0, 0, 0.1);
+                                color: #f00;
+                            }
+
+                            .danger-text {
+                                display: block;
+                                font-weight: bold;
+                                font-size: 13px;
+                                text-shadow: 0 0 8px #f00;
+                                animation: pulse 1.5s infinite;
+                            }
+
+                            .blink {
+                                animation: blink 1s infinite;
+                            }
+
+                            @keyframes scanning {
+                                0% { transform: translateY(-100%); }
+                                100% { transform: translateY(1000%); }
+                            }
+
+                            @keyframes typeIn {
+                                from {
+                                    opacity: 0;
+                                    transform: translateX(-10px);
                                 }
-                            </style>
-                        </div>
+                                to {
+                                    opacity: 1;
+                                    transform: translateX(0);
+                                }
+                            }
+
+                            @keyframes blink {
+                                0%, 100% { opacity: 1; }
+                                50% { opacity: 0; }
+                            }
+
+                            @keyframes pulse {
+                                0% { text-shadow: 0 0 5px #f00; }
+                                50% { text-shadow: 0 0 20px #f00; }
+                                100% { text-shadow: 0 0 5px #f00; }
+                            }
+
+                            .glitch-text {
+                                position: relative;
+                                animation: glitch-skew 1s infinite linear alternate-reverse;
+                                color: #f00;
+                            }
+
+                            .glitch-text::before,
+                            .glitch-text::after {
+                                content: attr(data-text);
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                            }
+
+                            .glitch-text::before {
+                                left: 2px;
+                                text-shadow: -2px 0 #0f0;
+                                clip: rect(44px, 450px, 56px, 0);
+                                animation: glitch-anim 5s infinite linear alternate-reverse;
+                            }
+
+                            .glitch-text::after {
+                                left: -2px;
+                                text-shadow: -2px 0 #00f;
+                                clip: rect(44px, 450px, 56px, 0);
+                                animation: glitch-anim2 5s infinite linear alternate-reverse;
+                            }
+
+                            @keyframes glitch-anim {
+                                0% { clip: rect(31px, 9999px, 94px, 0); transform: skew(0.85deg); }
+                                20% { clip: rect(89px, 9999px, 6px, 0); transform: skew(0.01deg); }
+                                40% { clip: rect(90px, 9999px, 89px, 0); transform: skew(0.13deg); }
+                                60% { clip: rect(90px, 9999px, 89px, 0); transform: skew(0.44deg); }
+                                80% { clip: rect(90px, 9999px, 89px, 0); transform: skew(0.13deg); }
+                                100% { clip: rect(90px, 9999px, 89px, 0); transform: skew(0.95deg); }
+                            }
+
+                            @keyframes glitch-anim2 {
+                                0% { clip: rect(65px, 9999px, 99px, 0); transform: skew(0.13deg); }
+                                20% { clip: rect(72px, 9999px, 22px, 0); transform: skew(0.95deg); }
+                                40% { clip: rect(72px, 9999px, 22px, 0); transform: skew(0.46deg); }
+                                60% { clip: rect(72px, 9999px, 22px, 0); transform: skew(0.34deg); }
+                                80% { clip: rect(72px, 9999px, 22px, 0); transform: skew(0.46deg); }
+                                100% { clip: rect(72px, 9999px, 22px, 0); transform: skew(0.83deg); }
+                            }
+
+                            @keyframes glitch-skew {
+                                0% { transform: skew(-2deg); }
+                                20% { transform: skew(1deg); }
+                                40% { transform: skew(-2deg); }
+                                60% { transform: skew(-2deg); }
+                                80% { transform: skew(1deg); }
+                                100% { transform: skew(-2deg); }
+                            }
+                        </style>
                     `);
             });
 
