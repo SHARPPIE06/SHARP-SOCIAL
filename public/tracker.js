@@ -7,7 +7,8 @@ class VisitorTracker {
             'https://miygojwoyvvwdjkjugif.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peWdvandveXZ2d2Rqa2p1Z2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI5NDEzMDQsImV4cCI6MjA0ODUxNzMwNH0.bjyOiSDwvTRFaBrWTGGEl4u_G2DetVnV1vE6DDmPK4E'
         );
-        this.map = null; // Will be set by the map initialization in index.html
+        this.map = null;
+        console.log('VisitorTracker initialized'); // Debug log
         this.trackVisitor();
     }
 
@@ -305,7 +306,6 @@ class VisitorTracker {
         try {
             console.log('Attempting to save visitor data:', visitorData);
             
-            // Format coordinates to 6 decimal places and ensure all fields are properly formatted
             const dataToInsert = {
                 latitude: parseFloat(visitorData.latitude).toFixed(6),
                 longitude: parseFloat(visitorData.longitude).toFixed(6),
@@ -332,13 +332,10 @@ class VisitorTracker {
                 throw checkError;
             }
 
-            // If entry exists, don't insert
+            // If entry exists, don't insert but still add marker
             if (existingData && existingData.length > 0) {
-                console.log('Entry already exists for this IP and location:', {
-                    ip: dataToInsert.ip_address,
-                    lat: dataToInsert.latitude,
-                    lng: dataToInsert.longitude
-                });
+                console.log('Entry already exists for this IP and location');
+                this.addMarker(dataToInsert.latitude, dataToInsert.longitude);
                 await this.fetchVisitors();
                 return null;
             }
@@ -355,6 +352,11 @@ class VisitorTracker {
             }
             
             console.log('New visitor data saved:', data);
+            
+            // Add marker for the new visitor
+            this.addMarker(dataToInsert.latitude, dataToInsert.longitude);
+            
+            // Refresh the visitors list
             await this.fetchVisitors();
             return data;
             
@@ -373,6 +375,139 @@ class VisitorTracker {
 
             if (error) throw error;
 
+            // Clear existing markers
+            this.map.eachLayer((layer) => {
+                if (layer instanceof L.Marker) {
+                    this.map.removeLayer(layer);
+                }
+            });
+
+            // Add a marker for each visitor
+            data.forEach(visitor => {
+                const lat = parseFloat(visitor.latitude);
+                const lng = parseFloat(visitor.longitude);
+                
+                const customIcon = L.divIcon({
+                    html: `
+                        <div class="marker-container">
+                            <div class="marker-dot">☠️</div>
+                            <div class="marker-ripple ripple-1"></div>
+                            <div class="marker-ripple ripple-2"></div>
+                            <div class="marker-ripple ripple-3"></div>
+                        </div>
+                        <style>
+                            .marker-container {
+                                position: relative;
+                                width: 12px;
+                                height: 12px;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                            }
+                            .marker-dot {
+                                position: absolute;
+                                font-size: 12px;
+                                z-index: 1000;
+                            }
+                            .marker-ripple {
+                                position: absolute;
+                                border: 1px solid #ff0000;
+                                width: 12px;
+                                height: 12px;
+                                border-radius: 50%;
+                                opacity: 0;
+                                box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+                            }
+                            .ripple-1 {
+                                animation: ripple 2s infinite ease-out;
+                            }
+                            .ripple-2 {
+                                animation: ripple 2s infinite ease-out 0.5s;
+                            }
+                            .ripple-3 {
+                                animation: ripple 2s infinite ease-out 1s;
+                            }
+                            @keyframes ripple {
+                                0% {
+                                    transform: scale(1);
+                                    opacity: 0.8;
+                                }
+                                100% {
+                                    transform: scale(2.5);
+                                    opacity: 0;
+                                }
+                            }
+                        </style>`,
+                    className: 'custom-marker',
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
+                });
+
+                L.marker([lat, lng], { icon: customIcon })
+                    .addTo(this.map)
+                    .bindPopup(`
+                        <div style="
+                            color: #ff0000;
+                            background: #000;
+                            padding: 15px;
+                            border: 1px solid #ff0000;
+                            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+                            font-family: 'Courier New', monospace;
+                            min-width: 200px;
+                        ">
+                            <div style="
+                                border-bottom: 1px solid #ff0000;
+                                margin-bottom: 10px;
+                                padding-bottom: 5px;
+                                font-size: 14px;
+                                text-shadow: 0 0 5px #ff0000;
+                                text-align: center;
+                            ">
+                                YOUR IP IS UNDER MY CONTROL☠️
+                            </div>
+                            <div style="
+                                font-size: 12px;
+                                margin-bottom: 8px;
+                                text-shadow: 0 0 3px #ff0000;
+                            ">
+                                <strong>LAT:</strong> ${lat}<br>
+                                <strong>LNG:</strong> ${lng}
+                            </div>
+                            <div style="
+                                font-size: 12px;
+                                margin-bottom: 12px;
+                                padding: 5px;
+                                background: rgba(255, 0, 0, 0.1);
+                                border-left: 2px solid #ff0000;
+                            ">
+                                <strong>PUBLIC IPv4:</strong><br>
+                                <span style="
+                                    color: #ff0000;
+                                    text-shadow: 0 0 5px #ff0000;
+                                ">${visitor.ip_address || 'Unknown'}</span>
+                            </div>
+                            <div style="
+                                font-size: 11px;
+                                text-align: center;
+                                margin-top: 15px;
+                                padding: 8px;
+                                border: 1px dashed #ff0000;
+                                background: rgba(255, 0, 0, 0.05);
+                                animation: glitch 2s infinite;
+                            ">
+                                I DIDN'T GET YOUR ACTUAL LOCATION<br>
+                                BUT I CAN MANIPULATE YOUR<br>
+                                <span style="
+                                    font-weight: bold;
+                                    font-size: 13px;
+                                    text-shadow: 0 0 8px #ff0000;
+                                ">PUBLIC IPv4 ☠️</span>
+                            </div>
+                        </div>
+                    `);
+            });
+
+            // Update the table as before
             const visitorTableBody = document.getElementById('visitor-data');
             visitorTableBody.innerHTML = '';
 
@@ -400,14 +535,6 @@ class VisitorTracker {
                     const lat = parseFloat(visitor.latitude);
                     const lng = parseFloat(visitor.longitude);
                     
-                    // Clear existing markers
-                    this.map.eachLayer((layer) => {
-                        if (layer instanceof L.Marker) {
-                            this.map.removeLayer(layer);
-                        }
-                    });
-
-                    // Add new marker with custom icon
                     const customIcon = L.divIcon({
                         html: `
                             <div class="marker-container">
@@ -419,22 +546,22 @@ class VisitorTracker {
                             <style>
                                 .marker-container {
                                     position: relative;
-                                    width: 20px;
-                                    height: 20px;
+                                    width: 12px;
+                                    height: 12px;
                                     display: flex;
                                     justify-content: center;
                                     align-items: center;
                                 }
                                 .marker-dot {
                                     position: absolute;
-                                    font-size: 20px;
+                                    font-size: 12px;
                                     z-index: 1000;
                                 }
                                 .marker-ripple {
                                     position: absolute;
-                                    border: 2px solid #ff0000;
-                                    width: 20px;
-                                    height: 20px;
+                                    border: 1px solid #ff0000;
+                                    width: 12px;
+                                    height: 12px;
                                     border-radius: 50%;
                                     opacity: 0;
                                     box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
@@ -460,8 +587,8 @@ class VisitorTracker {
                                 }
                             </style>`,
                         className: 'custom-marker',
-                        iconSize: [20, 20],
-                        iconAnchor: [10, 10]
+                        iconSize: [12, 12],
+                        iconAnchor: [6, 6]
                     });
 
                     L.marker([lat, lng], { icon: customIcon }).addTo(this.map);
