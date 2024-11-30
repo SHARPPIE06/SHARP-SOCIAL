@@ -13,8 +13,22 @@ class VisitorTracker {
 
     async trackVisitor() {
         try {
-            // Get visitor's location
-            const position = await this.getCurrentPosition();
+            let position;
+            try {
+                // Try getting visitor's location
+                position = await this.getCurrentPosition();
+            } catch (geoError) {
+                console.warn('Geolocation failed:', geoError);
+                // Fallback to IP-based location
+                const ipInfo = await this.getVisitorInfo();
+                position = {
+                    coords: {
+                        latitude: parseFloat(ipInfo.latitude) || 0,
+                        longitude: parseFloat(ipInfo.longitude) || 0
+                    }
+                };
+            }
+
             const ipInfo = await this.getVisitorInfo();
             
             // Get device info
@@ -48,24 +62,48 @@ class VisitorTracker {
 
     getCurrentPosition() {
         return new Promise((resolve, reject) => {
+            // Check if we're in a secure context
+            if (!window.isSecureContext) {
+                console.error('Geolocation requires a secure context (HTTPS)');
+                reject(new Error('Geolocation requires HTTPS'));
+                return;
+            }
+
             if (!navigator.geolocation) {
                 reject(new Error('Geolocation is not supported'));
                 return;
             }
-            navigator.geolocation.getCurrentPosition(resolve, reject);
+
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+
+            navigator.geolocation.getCurrentPosition(resolve, reject, options);
         });
     }
 
     async getVisitorInfo() {
         try {
+            // Use a more reliable IP API service
             const response = await fetch('https://ipapi.co/json/');
-            return response.json();
+            const data = await response.json();
+            return {
+                ip: data.ip,
+                country_name: data.country_name,
+                org: data.org,
+                latitude: data.latitude,
+                longitude: data.longitude
+            };
         } catch (error) {
             console.error('Error getting IP info:', error);
             return {
                 ip: 'unknown',
                 country_name: 'Unknown',
-                org: 'Unknown'
+                org: 'Unknown',
+                latitude: 0,
+                longitude: 0
             };
         }
     }
