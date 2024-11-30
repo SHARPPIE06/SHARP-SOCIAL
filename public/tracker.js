@@ -181,25 +181,32 @@ class VisitorTracker {
                     <style>
                         .marker-container {
                             position: relative;
-                            width: 12px;
-                            height: 12px;
+                            width: 20px;
+                            height: 20px;
                             display: flex;
                             justify-content: center;
                             align-items: center;
+                            transform: translate(-50%, -50%);
                         }
                         .marker-dot {
                             position: absolute;
-                            font-size: 12px;
+                            font-size: 16px;
                             z-index: 1000;
+                            left: 50%;
+                            top: 50%;
+                            transform: translate(-50%, -50%);
                         }
                         .marker-ripple {
                             position: absolute;
                             border: 1px solid #ff0000;
-                            width: 12px;
-                            height: 12px;
+                            width: 20px;
+                            height: 20px;
                             border-radius: 50%;
                             opacity: 0;
                             box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+                            left: 50%;
+                            top: 50%;
+                            transform: translate(-50%, -50%);
                         }
                         .ripple-1 {
                             animation: ripple 2s infinite ease-out;
@@ -212,18 +219,18 @@ class VisitorTracker {
                         }
                         @keyframes ripple {
                             0% {
-                                transform: scale(1);
+                                transform: translate(-50%, -50%) scale(1);
                                 opacity: 0.8;
                             }
                             100% {
-                                transform: scale(2.5);
+                                transform: translate(-50%, -50%) scale(2.5);
                                 opacity: 0;
                             }
                         }
                     </style>`,
                 className: 'custom-marker',
-                iconSize: [12, 12],
-                iconAnchor: [6, 6]
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
             });
 
             L.marker([lat, lng], { icon: customIcon }).addTo(this.map)
@@ -398,25 +405,32 @@ class VisitorTracker {
                         <style>
                             .marker-container {
                                 position: relative;
-                                width: 12px;
-                                height: 12px;
+                                width: 20px;
+                                height: 20px;
                                 display: flex;
                                 justify-content: center;
                                 align-items: center;
+                                transform: translate(-50%, -50%);
                             }
                             .marker-dot {
                                 position: absolute;
-                                font-size: 12px;
+                                font-size: 16px;
                                 z-index: 1000;
+                                left: 50%;
+                                top: 50%;
+                                transform: translate(-50%, -50%);
                             }
                             .marker-ripple {
                                 position: absolute;
                                 border: 1px solid #ff0000;
-                                width: 12px;
-                                height: 12px;
+                                width: 20px;
+                                height: 20px;
                                 border-radius: 50%;
                                 opacity: 0;
                                 box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+                                left: 50%;
+                                top: 50%;
+                                transform: translate(-50%, -50%);
                             }
                             .ripple-1 {
                                 animation: ripple 2s infinite ease-out;
@@ -429,80 +443,29 @@ class VisitorTracker {
                             }
                             @keyframes ripple {
                                 0% {
-                                    transform: scale(1);
+                                    transform: translate(-50%, -50%) scale(1);
                                     opacity: 0.8;
                                 }
                                 100% {
-                                    transform: scale(2.5);
+                                    transform: translate(-50%, -50%) scale(2.5);
                                     opacity: 0;
                                 }
                             }
                         </style>`,
                     className: 'custom-marker',
-                    iconSize: [12, 12],
-                    iconAnchor: [6, 6]
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
                 });
 
                 L.marker([lat, lng], { icon: customIcon })
                     .addTo(this.map)
                     .bindPopup(`
-                        <div style="
-                            color: #ff0000;
-                            background: #000;
-                            padding: 15px;
-                            border: 1px solid #ff0000;
-                            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-                            font-family: 'Courier New', monospace;
-                            min-width: 200px;
-                        ">
-                            <div style="
-                                border-bottom: 1px solid #ff0000;
-                                margin-bottom: 10px;
-                                padding-bottom: 5px;
-                                font-size: 14px;
-                                text-shadow: 0 0 5px #ff0000;
-                                text-align: center;
-                            ">
-                                YOUR IP IS UNDER MY CONTROL☠️
-                            </div>
-                            <div style="
-                                font-size: 12px;
-                                margin-bottom: 8px;
-                                text-shadow: 0 0 3px #ff0000;
-                            ">
-                                <strong>LAT:</strong> ${lat}<br>
-                                <strong>LNG:</strong> ${lng}
-                            </div>
-                            <div style="
-                                font-size: 12px;
-                                margin-bottom: 12px;
-                                padding: 5px;
-                                background: rgba(255, 0, 0, 0.1);
-                                border-left: 2px solid #ff0000;
-                            ">
-                                <strong>PUBLIC IPv4:</strong><br>
-                                <span style="
-                                    color: #ff0000;
-                                    text-shadow: 0 0 5px #ff0000;
-                                ">${visitor.ip_address || 'Unknown'}</span>
-                            </div>
-                            <div style="
-                                font-size: 11px;
-                                text-align: center;
-                                margin-top: 15px;
-                                padding: 8px;
-                                border: 1px dashed #ff0000;
-                                background: rgba(255, 0, 0, 0.05);
-                                animation: glitch 2s infinite;
-                            ">
-                                I DIDN'T GET YOUR ACTUAL LOCATION<br>
-                                BUT I CAN MANIPULATE YOUR<br>
-                                <span style="
-                                    font-weight: bold;
-                                    font-size: 13px;
-                                    text-shadow: 0 0 8px #ff0000;
-                                ">PUBLIC IPv4 ☠️</span>
-                            </div>
+                        <div style="color: #ff0000; background: #000; padding: 15px;">
+                            <strong>Location:</strong> ${lat}, ${lng}<br>
+                            <strong>IP:</strong> ${visitor.ip_address || 'Unknown'}<br>
+                            <strong>Country:</strong> ${visitor.country || 'Unknown'}<br>
+                            <strong>ISP:</strong> ${visitor.isp || 'Unknown'}<br>
+                            <strong>Time:</strong> ${new Date(visitor.visit_time).toLocaleString()}
                         </div>
                     `);
             });
@@ -546,25 +509,32 @@ class VisitorTracker {
                             <style>
                                 .marker-container {
                                     position: relative;
-                                    width: 12px;
-                                    height: 12px;
+                                    width: 20px;
+                                    height: 20px;
                                     display: flex;
                                     justify-content: center;
                                     align-items: center;
+                                    transform: translate(-50%, -50%);
                                 }
                                 .marker-dot {
                                     position: absolute;
-                                    font-size: 12px;
+                                    font-size: 16px;
                                     z-index: 1000;
+                                    left: 50%;
+                                    top: 50%;
+                                    transform: translate(-50%, -50%);
                                 }
                                 .marker-ripple {
                                     position: absolute;
                                     border: 1px solid #ff0000;
-                                    width: 12px;
-                                    height: 12px;
+                                    width: 20px;
+                                    height: 20px;
                                     border-radius: 50%;
                                     opacity: 0;
                                     box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+                                    left: 50%;
+                                    top: 50%;
+                                    transform: translate(-50%, -50%);
                                 }
                                 .ripple-1 {
                                     animation: ripple 2s infinite ease-out;
@@ -577,18 +547,18 @@ class VisitorTracker {
                                 }
                                 @keyframes ripple {
                                     0% {
-                                        transform: scale(1);
+                                        transform: translate(-50%, -50%) scale(1);
                                         opacity: 0.8;
                                     }
                                     100% {
-                                        transform: scale(2.5);
+                                        transform: translate(-50%, -50%) scale(2.5);
                                         opacity: 0;
                                     }
                                 }
                             </style>`,
                         className: 'custom-marker',
-                        iconSize: [12, 12],
-                        iconAnchor: [6, 6]
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
                     });
 
                     L.marker([lat, lng], { icon: customIcon }).addTo(this.map);
